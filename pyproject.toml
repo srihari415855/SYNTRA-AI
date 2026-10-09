@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-system"
+version = "0.1.0"
+description = "Model-Routing & Tool-Use Harness MVP with Multi-Turn Intent Routing, Tool Execution, and Durable State Management"
+authors = [
+    { name = "Senior Software Architect", email = "architect@example.com" }
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn>=0.30.0",
+    "pydantic>=2.7.0",
+    "tenacity>=9.0.0",
+    "httpx>=0.27.0",
+    "sqlalchemy>=2.0.0",
+    "aiosqlite>=0.20.0",
+    "python-dotenv>=1.0.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "httpx>=0.27.0"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]

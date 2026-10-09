@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SYNTRA AI — OpenPilot Engine | One Request. Every Model. Zero Guesswork.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="dark-theme">
+  <!-- Background Glow Accents -->
+  <div class="bg-glow-violet"></div>
+  <div class="bg-glow-cyan"></div>
+  <div class="grid-overlay"></div>
+
+  <!-- Top Navigation -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-group">
+        <div class="brand-logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="url(#paint0_linear)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 17L12 22L22 17" stroke="url(#paint1_linear)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 12L12 17L22 12" stroke="url(#paint2_linear)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="paint0_linear" x1="2" y1="2" x2="22" y2="12" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#A78BFA"/>
+                <stop offset="1" stop-color="#38BDF8"/>
+              </linearGradient>
+              <linearGradient id="paint1_linear" x1="2" y1="17" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#8B5CF6"/>
+                <stop offset="1" stop-color="#0EA5E9"/>
+              </linearGradient>
+              <linearGradient id="paint2_linear" x1="2" y1="12" x2="22" y2="17" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#C084FC"/>
+                <stop offset="1" stop-color="#38BDF8"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">SYNTRA <span class="brand-sub">AI</span></span>
+          <span class="brand-badge">OPENPILOT ENGINE</span>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <button class="nav-btn active" id="tab-studio-btn">Studio</button>
+        <button class="nav-btn" id="tab-dashboard-btn">Dashboard</button>
+        <button class="nav-btn" id="tab-catalogue-btn">Model Explorer</button>
+        <button class="nav-btn" id="tab-history-btn">Reports</button>
+        <button class="nav-btn" id="tab-settings-btn">Settings</button>
+        <button class="nav-btn jury-demo-nav-btn" id="nav-jury-demo-btn">
+          <span class="live-dot-pulse"></span>
+          Jury Failover Demo
+        </button>
+      </nav>
+
+      <div class="user-status-group">
+        <div class="engine-status-pill" id="system-status-indicator" title="Local LLM Connectivity">
+          <span class="status-dot pulsing"></span>
+          <span class="status-label" id="system-status-text">Engine Ready</span>
+        </div>
+
+        <div class="auth-control-area" id="auth-controls">
+          <!-- Populated by JS: Login Button or User Profile Dropdown -->
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="main-content">
+
+    <!-- VIEW 1: STUDIO (REQUEST -> UNDERSTAND -> RECOMMEND -> EXECUTE) -->
+    <section class="view-panel active" id="view-studio">
+      <!-- Hero Headline Banner -->
+      <div class="hero-banner">
+        <div class="hero-badge">AI ORCHESTRATION PLATFORM</div>
+        <h1 class="hero-headline">Stop choosing AIs. <span class="gradient-text">Start choosing outcomes.</span></h1>
+        <p class="hero-subtext">One request. Every model. Zero guesswork. Real dynamic routing across open-weights and frontier engines.</p>
+      </div>
+
+      <!-- Studio Layout Grid -->
+      <div class="studio-grid">
+        
+        <!-- Left Column: Dynamic Request Studio -->
+        <div class="studio-col left-col">
+          <div class="glass-card input-card">
+            <div class="card-header">
+              <div class="header-title-wrap">
+                <span class="icon-circle">✍️</span>
+                <h2>Dynamic Request Studio</h2>
+              </div>
+              <span class="token-counter" id="char-word-counter">0 words</span>
+            </div>
+
+            <!-- Suggestion Chips -->
+            <div class="sample-chips-bar">
+              <span class="chips-label">Try:</span>
+              <button class="chip-btn" data-prompt="calculate 24 * (120 / 4) + 2**6">Math Tool</button>
+              <button class="chip-btn" data-prompt="Write a Python FastAPI middleware to log request latency in milliseconds">Coding</button>
+              <button class="chip-btn" data-prompt="Prove step by step why square root of 2 is an irrational number">Complex Proof</button>
+              <button class="chip-btn" data-prompt="weather in Tokyo">Weather Tool</button>
+              <button class="chip-btn" data-prompt="system info">System Info</button>
+            </div>
+
+            <!-- Multi-Modal Input Area -->
+            <div class="prompt-input-wrapper">
+              <textarea 
+                id="user-prompt-input" 
+                class="prompt-textarea" 
+                placeholder="Enter any coding task, math proof, query, or attach an image / record your voice..."
+                rows="4"
+              ></textarea>
+
+              <!-- Image Attachment Preview Box (Hidden by default) -->
+              <div class="attachment-preview-box hidden" id="image-preview-container">
+                <img id="image-preview-thumb" src="" alt="Attached media">
+                <div class="attachment-meta">
+                  <span class="file-name" id="image-preview-name">image.png</span>
+                  <span class="file-size" id="image-preview-size">0 KB</span>
+                </div>
+                <button class="remove-attachment-btn" id="remove-image-btn" title="Remove attachment">×</button>
+              </div>
+
+              <!-- Audio Recording Live Bar (Hidden by default) -->
+              <div class="audio-live-bar hidden" id="audio-recording-bar">
+                <div class="audio-wave">
+                  <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                </div>
+                <span class="audio-status-label">Listening... Speak into microphone</span>
+                <button class="stop-audio-btn" id="stop-audio-btn">Done</button>
+              </div>
+            </div>
+
+            <!-- Input Controls Bar -->
+            <div class="input-actions-bar">
+              <div class="media-buttons">
+                <!-- Image Upload Button -->
+                <label class="media-btn" title="Attach Image for Visual Analysis">
+                  <input type="file" id="image-file-input" accept="image/png, image/jpeg, image/webp" style="display: none;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                  <span>Image</span>
+                </label>
+
+                <!-- Voice Recording Button -->
+                <button class="media-btn" id="voice-record-btn" title="Record Voice & Transcribe">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                    <line x1="12" y1="19" x2="12" y2="23"/>
+                    <line x1="8" y1="23" x2="16" y2="23"/>
+                  </svg>
+                  <span id="voice-btn-label">Voice</span>
+                </button>
+
+                <button class="clear-btn" id="clear-prompt-btn" title="Clear Input">Clear</button>
+              </div>
+
+              <!-- Main Submission Button -->
+              <button class="primary-action-btn" id="analyze-route-btn">
+                <span class="btn-text">Route & Execute</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                  <polyline points="12 5 19 12 12 19"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Dynamic Request Understanding Card -->
+          <div class="glass-card understanding-card" id="understanding-card">
+            <div class="card-header">
+              <div class="header-title-wrap">
+                <span class="icon-circle">🧠</span>
+                <h2>Dynamic Request Understanding</h2>
+              </div>
+              <span class="confidence-badge" id="und-confidence-badge">Awaiting Input</span>
+            </div>
+
+            <div class="understanding-body">
+              <div class="und-meta-grid">
+                <div class="und-meta-item">
+                  <span class="meta-label">Task Category</span>
+                  <span class="meta-val highlight" id="und-task-category">—</span>
+                </div>
+                <div class="und-meta-item">
+                  <span class="meta-label">Required Modalities</span>
+                  <div class="modality-tags" id="und-modalities">
+                    <span class="tag">text</span>
+                  </div>
+                </div>
+                <div class="und-meta-item">
+                  <span class="meta-label">Complexity</span>
+                  <span class="meta-val" id="und-complexity">—</span>
+                </div>
+                <div class="und-meta-item">
+                  <span class="meta-label">Required Tools</span>
+                  <span class="meta-val" id="und-tools">None</span>
+                </div>
+              </div>
+
+              <div class="rationale-box">
+                <span class="rationale-label">Orchestrator Routing Rationale:</span>
+                <p class="rationale-text" id="und-rationale-text">Submit a prompt to inspect live intent classification, tool requirements, and token estimations.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Model Recommendations & Live Execution -->
+        <div class="studio-col right-col">
+
+          <!-- Dynamic Recommendations Card -->
+          <div class="glass-card recommendations-card" id="recommendations-card">
+            <div class="card-header flex-between">
+              <div class="header-title-wrap">
+                <span class="icon-circle">🎯</span>
+                <h2>Engine Recommendations</h2>
+              </div>
+              <span class="engine-count-badge" id="rec-count-badge">10 Engines Evaluated</span>
+            </div>
+
+            <!-- Ranking Policy Mode Selector Tabs -->
+            <div class="ranking-tabs-nav">
+              <button class="rank-tab-btn active" data-mode="best_value">Best Value</button>
+              <button class="rank-tab-btn" data-mode="best_performance">Best Performance</button>
+              <button class="rank-tab-btn" data-mode="lowest_price">Lowest Price</button>
+              <button class="rank-tab-btn" data-mode="free">Free Mode</button>
+              <button class="rank-tab-btn" data-mode="paid">Paid Mode</button>
+            </div>
+
+            <div class="recommendations-summary-bar" id="rec-summary-bar">
+              Select or submit a request to compute transparent engine rankings.
+            </div>
+
+            <!-- Recommendation Candidate List -->
+            <div class="candidates-container" id="candidates-container">
+              <!-- Dynamically rendered candidate cards -->
+              <div class="empty-state-card">
+                <p>Type a request and click <strong>Route & Execute</strong> to see dynamic rankings across Gemma 4, Qwen 2.5 Coder, DeepSeek-R1, Claude 3.5, and GPT-4o.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Execution Console Card -->
+          <div class="glass-card execution-card" id="execution-card">
+            <div class="card-header flex-between">
+              <div class="header-title-wrap">
+                <span class="icon-circle">⚡</span>
+                <h2>Execution Output</h2>
+              </div>
+              <div class="execution-metrics-bar" id="exec-metrics-bar">
+                <span class="metric-pill hidden" id="exec-status-pill">Ready</span>
+                <span class="metric-pill hidden" id="exec-time-pill">0 ms</span>
+                <span class="metric-pill hidden" id="exec-cost-pill">$0.00</span>
+              </div>
+            </div>
+
+            <!-- Loading Spinner State -->
+            <div class="execution-loading-box hidden" id="execution-loading-box">
+              <div class="spinner-ring"></div>
+              <p class="loading-status-text" id="loading-status-text">Dispatching intent through Model Interface Layer...</p>
+            </div>
+
+            <!-- Tools Executed Details (Accordion) -->
+            <div class="tool-audit-accordion hidden" id="tool-audit-box">
+              <div class="accordion-header" id="tool-audit-toggle">
+                <span>🔧 Tool Executions (<span id="tool-count-num">0</span>)</span>
+                <span class="chevron">▼</span>
+              </div>
+              <div class="accordion-content" id="tool-audit-content">
+                <!-- Tool details injected by JS -->
+              </div>
+            </div>
+
+            <!-- Markdown Output Body -->
+            <div class="output-content-area" id="output-content-area">
+              <div class="empty-output-placeholder">
+                <p>Synthesized engine results and tool outputs will appear here in real-time.</p>
+              </div>
+            </div>
+
+            <!-- Output Action Footer -->
+            <div class="output-footer hidden" id="output-footer">
+              <span class="engine-used-label" id="engine-used-tag">Engine: gemma-4-e4b</span>
+              <button class="copy-output-btn" id="copy-output-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy Output
+              </button>
+            </div>
+          </div>
+
+          <!-- USER RATING & RECOMMENDATION FEEDBACK CARD (Section 12) -->
+          <div class="glass-card review-card hidden" id="review-feedback-card">
+            <div class="card-header flex-between">
+              <div class="header-title-wrap">
+                <span class="icon-circle">⭐</span>
+                <h2>Review & Routing Feedback Loop</h2>
+              </div>
+              <span class="feedback-badge" id="feedback-badge">Adaptive Learning</span>
+            </div>
+            <div class="review-body">
+              <p class="review-prompt-text">Rate this result to fuel future Bayesian engine recommendations for <strong id="review-task-category">this category</strong>:</p>
+              
+              <!-- 5 Interactive Stars -->
+              <div class="star-rating-row" id="star-rating-row">
+                <button type="button" class="star-btn" data-star="1">★</button>
+                <button type="button" class="star-btn" data-star="2">★</button>
+                <button type="button" class="star-btn" data-star="3">★</button>
+                <button type="button" class="star-btn" data-star="4">★</button>
+                <button type="button" class="star-btn" data-star="5">★</button>
+                <span class="rating-label" id="rating-label-text">Select rating (1-5)</span>
+              </div>
+
+              <!-- 5 Diagnostic Criteria Checkboxes -->
+              <div class="diagnostic-grid">
+                <label class="diag-label">
+                  <input type="checkbox" id="diag-correct" checked>
+                  <span>🎯 Accurate & Correct</span>
+                </label>
+                <label class="diag-label">
+                  <input type="checkbox" id="diag-useful" checked>
+                  <span>💡 High Utility</span>
+                </label>
+                <label class="diag-label">
+                  <input type="checkbox" id="diag-complete" checked>
+                  <span>📋 Complete Solution</span>
+                </label>
+                <label class="diag-label">
+                  <input type="checkbox" id="diag-fast" checked>
+                  <span>⚡ Fast Enough</span>
+                </label>
+                <label class="diag-label">
+                  <input type="checkbox" id="diag-cost" checked>
+                  <span>💰 Acceptable Cost</span>
+                </label>
+              </div>
+
+              <div class="review-notes-row">
+                <input type="text" id="review-notes-input" placeholder="Optional notes (e.g. clean code, good tone)..." class="review-input">
+                <button type="button" class="submit-review-btn" id="submit-review-btn">Submit Rating</button>
+              </div>
+
+              <div class="review-feedback-banner hidden" id="review-feedback-banner">
+                <!-- Populated with Bayesian smoothed score impact -->
+              </div>
+            </div>
+          </div>
+
+          <!-- TOKEN INTELLIGENCE & ADAPTIVE BUDGET CARD (Section 8) -->
+          <div class="glass-card token-card hidden" id="token-intelligence-card">
+            <div class="card-header flex-between" id="token-card-header-toggle" style="cursor: pointer;">
+              <div class="header-title-wrap">
+                <span class="icon-circle">🪙</span>
+                <h2>Token Intelligence & Adaptive Budget</h2>
+              </div>
+              <div class="token-pills-wrap">
+                <span class="token-pill" id="token-savings-pill">28% Saved vs Baseline</span>
+                <span class="token-pill" id="token-strategy-pill">Single Engine</span>
+                <span class="chevron" id="token-chevron">▼</span>
+              </div>
+            </div>
+            <div class="token-body" id="token-body">
+              <div class="token-comparison-grid">
+                <div class="token-box baseline-box">
+                  <span class="token-box-title">Uncompressed Baseline</span>
+                  <span class="token-number" id="token-baseline-num">1,450 tokens</span>
+                  <span class="token-sub">Raw history + verbose instructions</span>
+                </div>
+                <div class="token-box planned-box">
+                  <span class="token-box-title">Adaptive Budget Plan</span>
+                  <span class="token-number" id="token-planned-num">980 tokens</span>
+                  <span class="token-sub">Context DNA + tiered output limits</span>
+                </div>
+                <div class="token-box observed-box">
+                  <span class="token-box-title">Observed Turn Usage</span>
+                  <span class="token-number" id="token-observed-num">840 tokens</span>
+                  <span class="token-sub" id="token-savings-exact">470 tokens saved</span>
+                </div>
+              </div>
+
+              <!-- Token Allocation Breakdown Bar -->
+              <div class="token-breakdown-section">
+                <span class="section-label">Lifecycle Budget Allocation:</span>
+                <div class="token-bar-container">
+                  <div class="tbar-seg tbar-input" id="tbar-input" style="width: 25%;" title="User Input">Input (25%)</div>
+                  <div class="tbar-seg tbar-system" id="tbar-system" style="width: 10%;" title="System Prompt">Sys (10%)</div>
+                  <div class="tbar-seg tbar-context" id="tbar-context" style="width: 20%;" title="Conversation Context">Ctx (20%)</div>
+                  <div class="tbar-seg tbar-output" id="tbar-output" style="width: 35%;" title="Output Budget">Output (35%)</div>
+                  <div class="tbar-seg tbar-trust" id="tbar-trust" style="width: 10%;" title="Trust & Recovery">Reserve (10%)</div>
+                </div>
+                <div class="token-breakdown-legend">
+                  <span class="legend-item"><span class="legend-dot tbar-input"></span> Input & Prompts</span>
+                  <span class="legend-item"><span class="legend-dot tbar-system"></span> System Directives</span>
+                  <span class="legend-item"><span class="legend-dot tbar-context"></span> Context DNA</span>
+                  <span class="legend-item"><span class="legend-dot tbar-output"></span> Synthesized Output</span>
+                  <span class="legend-item"><span class="legend-dot tbar-trust"></span> Verification & Recovery</span>
+                </div>
+              </div>
+              <div class="token-rationale" id="token-decomp-rationale">
+                <!-- Decomposition explanation -->
+              </div>
+            </div>
+          </div>
+
+          <!-- POST-RESPONSE RECOVERY CONTROLS -->
+          <div class="glass-card recovery-controls-card hidden" id="recovery-controls-card">
+            <div class="recovery-actions-header">
+              <span class="recovery-title">🎯 Quality Recovery & Continuity Controls</span>
+              <span class="recovery-hint">Preserves conversation & adapts working state</span>
+            </div>
+            <div class="recovery-btn-group">
+              <button class="recovery-btn" id="btn-retry-tenacity" title="Bounded retry with exponential backoff and jitter">
+                <span class="icon">🔄</span> Retry (Tenacity)
+              </button>
+              <button class="recovery-btn" id="btn-improve-output" title="Refine current response with specific guidance">
+                <span class="icon">⚡</span> Improve Answer
+              </button>
+              <button class="recovery-btn" id="btn-verify-trust" title="Re-evaluate output across Trust Layer Stages A-E">
+                <span class="icon">🛡️</span> Verify Output
+              </button>
+              <button class="recovery-btn" id="btn-switch-engine" title="Perform Context DNA handover to an eligible alternative">
+                <span class="icon">🔀</span> Switch Engine
+              </button>
+              <button class="recovery-btn" id="btn-report-issue" title="Report inaccuracy or formatting violation">
+                <span class="icon">🚩</span> Report Issue
+              </button>
+            </div>
+          </div>
+
+          <!-- THE TRUST LAYER: MULTI-STAGE OUTPUT VERIFICATION CARD -->
+          <div class="glass-card trust-layer-card hidden" id="trust-layer-card">
+            <div class="card-header flex-between">
+              <div class="header-title-wrap">
+                <span class="icon-circle">🛡️</span>
+                <h2>The Trust Layer: Output Verification</h2>
+              </div>
+              <div class="trust-status-wrap">
+                <span class="trust-decision-pill" id="trust-decision-badge">VERIFIED</span>
+                <span class="trust-confidence-pill" id="trust-confidence-badge">95% Conf</span>
+              </div>
+            </div>
+
+            <div class="trust-body">
+              <!-- Verification Stages Grid -->
+              <div class="trust-stages-grid">
+                <div class="stage-col" id="stage-col-a">
+                  <div class="stage-pill passed" id="pill-stage-a">
+                    <span class="stage-dot"></span> STAGE A: Integrity
+                  </div>
+                  <span class="stage-desc">Schema & Truncation</span>
+                </div>
+                <div class="stage-col" id="stage-col-b">
+                  <div class="stage-pill passed" id="pill-stage-b">
+                    <span class="stage-dot"></span> STAGE B: Compliance
+                  </div>
+                  <span class="stage-desc">Formats & Constraints</span>
+                </div>
+                <div class="stage-col" id="stage-col-c">
+                  <div class="stage-pill passed" id="pill-stage-c">
+                    <span class="stage-dot"></span> STAGE C: Validation
+                  </div>
+                  <span class="stage-desc">AST Syntax / Math</span>
+                </div>
+                <div class="stage-col" id="stage-col-d">
+                  <div class="stage-pill passed" id="pill-stage-d">
+                    <span class="stage-dot"></span> STAGE D: Review
+                  </div>
+                  <span class="stage-desc">Consistency & Tone</span>
+                </div>
+                <div class="stage-col" id="stage-col-e">
+                  <div class="stage-pill passed" id="pill-stage-e">
+                    <span class="stage-dot"></span> STAGE E: Policy
+                  </div>
+                  <span class="stage-desc">Standard Enforcement</span>
+                </div>
+              </div>
+
+              <!-- Findings Accordion / Details -->
+              <div class="trust-findings-box" id="trust-findings-box">
+                <div class="findings-header">
+                  <span>Audit Findings & Disclosures</span>
+                  <span class="findings-count" id="trust-findings-count">3 Checks Passed</span>
+                </div>
+                <div class="findings-list" id="trust-findings-list">
+                  <!-- Dynamically rendered findings -->
+                </div>
+              </div>
+
+              <div class="trust-disclaimer">
+                ⚠️ <em>Verification reduces identifiable syntactic, mathematical, and requirement defects; it does not promise absolute correctness.</em>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONTEXT DNA: WORK PRESERVATION & CONTINUITY INSPECTOR -->
+          <div class="glass-card context-dna-card hidden" id="context-dna-card">
+            <div class="card-header flex-between" id="context-dna-header-toggle" style="cursor: pointer;">
+              <div class="header-title-wrap">
+                <span class="icon-circle">🧬</span>
+                <h2>Context DNA: Preserved State of Work</h2>
+              </div>
+              <div class="dna-metrics-pill-wrap">
+                <span class="dna-metric-pill" id="dna-compression-pill">2.8x Compression</span>
+                <span class="dna-metric-pill" id="dna-retention-pill">100% Constraints Retained</span>
+                <span class="chevron" id="dna-chevron">▼</span>
+              </div>
+            </div>
+
+            <div class="context-dna-body" id="context-dna-body">
+              <div class="dna-tabs-bar">
+                <button class="dna-tab active" data-dna-tab="goal">A. Goal</button>
+                <button class="dna-tab" data-dna-tab="constraints">B. Constraints</button>
+                <button class="dna-tab" data-dna-tab="state">C. Current State</button>
+                <button class="dna-tab" data-dna-tab="knowledge">D. Knowledge</button>
+                <button class="dna-tab" data-dna-tab="defects">E. Defects</button>
+                <button class="dna-tab" data-dna-tab="decisions">F. Decisions</button>
+                <button class="dna-tab" data-dna-tab="artifacts">G. Artifacts</button>
+                <button class="dna-tab" data-dna-tab="continuation">H. Continuation</button>
+              </div>
+
+              <div class="dna-tab-content-area" id="dna-content-display">
+                <!-- Dynamically populated tab content -->
+              </div>
+            </div>
+          </div>
+
+          <!-- EXECUTION TRACE TIMELINE -->
+          <div class="glass-card trace-card hidden" id="trace-card">
+            <div class="card-header flex-between" id="trace-header-toggle" style="cursor: pointer;">
+              <div class="header-title-wrap">
+                <span class="icon-circle">⏱️</span>
+                <h2>Live Execution Trace Timeline</h2>
+              </div>
+              <div class="trace-summary-pill" id="trace-total-latency">
+                Total Latency: 0 ms
+              </div>
+            </div>
+
+            <div class="trace-body" id="trace-body">
+              <div class="trace-timeline-list" id="trace-timeline-list">
+                <!-- Dynamically populated trace events -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: MODEL CATALOGUE EXPLORER -->
+    <section class="view-panel" id="view-catalogue">
+      <div class="catalogue-header-section">
+        <h2>Verified Model Catalogue</h2>
+        <p>Dynamic registry of verified local open-weights engines and frontier commercial APIs. Real specifications, verified pricing, and live status.</p>
+      </div>
+
+      <div class="catalogue-filter-bar">
+        <input type="text" id="catalogue-search-input" class="catalogue-search" placeholder="Search by model, provider, or task...">
+        <div class="filter-group">
+          <button class="filter-pill active" data-filter="all">All (10)</button>
+          <button class="filter-pill" data-filter="free">Free / Local</button>
+          <button class="filter-pill" data-filter="paid">Commercial APIs</button>
+        </div>
+      </div>
+
+      <div class="catalogue-table-wrapper glass-card">
+        <table class="catalogue-table">
+          <thead>
+            <tr>
+              <th>Model & Provider</th>
+              <th>Access Category</th>
+              <th>Verified Pricing</th>
+              <th>Context Window</th>
+              <th>Benchmark Score</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="catalogue-table-body">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- VIEW 3: AUDIT HISTORY -->
+    <section class="view-panel" id="view-history">
+      <div class="history-header-section">
+        <h2>Turn Execution & Cost History</h2>
+        <p>Chronological transaction record of all user queries, chosen engines, tool executions, latencies, and billing costs.</p>
+      </div>
+
+      <div class="history-table-wrapper glass-card">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Task Category</th>
+              <th>Prompt</th>
+              <th>Selected Engine</th>
+              <th>Latency</th>
+              <th>Tokens</th>
+              <th>Turn Cost</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="history-table-body">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- VIEW 4: DASHBOARD / CONTROL CENTER (Section 15) -->
+    <section class="view-panel" id="view-dashboard">
+      <div class="dashboard-header-section">
+        <div class="dashboard-badge">SYSTEM-WIDE CONTROL CENTER</div>
+        <h2>Operational Telemetry & Performance Dashboard</h2>
+        <p>Live metrics aggregated directly from SQLite database audit logs. Zero synthetic estimations.</p>
+      </div>
+
+      <!-- KPI Grid -->
+      <div class="kpi-stats-grid">
+        <div class="glass-card kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-icon">⚡</span>
+            <span class="kpi-title">Total Requests</span>
+          </div>
+          <div class="kpi-value" id="kpi-total-requests">0</div>
+          <div class="kpi-meta"><span class="status-success" id="kpi-success-rate">100%</span> Success Rate (<span id="kpi-failed-count">0</span> failed)</div>
+        </div>
+
+        <div class="glass-card kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-icon">🪙</span>
+            <span class="kpi-title">Token Accounting</span>
+          </div>
+          <div class="kpi-value" id="kpi-total-tokens">0</div>
+          <div class="kpi-meta"><span class="status-success" id="kpi-saved-tokens">+0</span> Verified Tokens Saved (~28%)</div>
+        </div>
+
+        <div class="glass-card kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-icon">💰</span>
+            <span class="kpi-title">Expenditure & Modes</span>
+          </div>
+          <div class="kpi-value" id="kpi-total-cost">$0.000000</div>
+          <div class="kpi-meta"><span id="kpi-free-count">0</span> Free / <span id="kpi-paid-count">0</span> Paid Turns</div>
+        </div>
+
+        <div class="glass-card kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-icon">⏱️</span>
+            <span class="kpi-title">Measured Latency</span>
+          </div>
+          <div class="kpi-value" id="kpi-median-latency">0 ms</div>
+          <div class="kpi-meta">p95: <span id="kpi-p95-latency">0 ms</span> | Avg: <span id="kpi-avg-latency">0 ms</span></div>
+        </div>
+
+        <div class="glass-card kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-icon">⭐</span>
+            <span class="kpi-title">User Satisfaction</span>
+          </div>
+          <div class="kpi-value" id="kpi-avg-rating">0.0★</div>
+          <div class="kpi-meta"><span id="kpi-reviews-count">0</span> Recorded Reviews</div>
+        </div>
+      </div>
+
+      <!-- Distributions Section -->
+      <div class="dashboard-charts-grid">
+        <div class="glass-card chart-card">
+          <div class="card-header">
+            <div class="header-title-wrap">
+              <span class="icon-circle">🤖</span>
+              <h3>Model Usage Distribution</h3>
+            </div>
+            <span class="chart-subtitle">Real turns dispatched per engine</span>
+          </div>
+          <div class="distribution-list" id="model-usage-list">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <div class="glass-card chart-card">
+          <div class="card-header">
+            <div class="header-title-wrap">
+              <span class="icon-circle">📊</span>
+              <h3>Task Category Breakdown</h3>
+            </div>
+            <span class="chart-subtitle">Inferred intent domain spread</span>
+          </div>
+          <div class="distribution-list" id="category-usage-list">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 5: SETTINGS & PREFERENCES (Section 17.G) -->
+    <section class="view-panel" id="view-settings">
+      <div class="settings-header-section">
+        <h2>Orchestration & Governance Settings</h2>
+        <p>Control routing policies, maximum turn spending limits, model tier preferences, and Trust Layer verification strictness.</p>
+      </div>
+
+      <div class="settings-container glass-card">
+        <div class="settings-group">
+          <h3>Default Ranking Policy</h3>
+          <p class="settings-desc">Select which policy automatically guides engine recommendations.</p>
+          <div class="settings-options-row">
+            <label class="radio-label">
+              <input type="radio" name="pref-ranking-mode" value="best_value" checked>
+              <span><strong>Best Value</strong> (Optimized balance of performance, pricing, and Bayesian ratings)</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="pref-ranking-mode" value="lowest_price">
+              <span><strong>Lowest Price</strong> (Always prefer free or cheapest capable engine)</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="pref-ranking-mode" value="best_performance">
+              <span><strong>Best Performance</strong> (Frontier benchmark leader regardless of cost)</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="pref-ranking-mode" value="free">
+              <span><strong>Free Only</strong> (Strictly open-weights local execution; zero billed API calls)</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <h3>Spending Controls & Safety</h3>
+          <p class="settings-desc">Hard spending limit per request turn.</p>
+          <div class="settings-field-row">
+            <label for="pref-max-budget">Max Budget per Turn (cents):</label>
+            <input type="number" id="pref-max-budget" value="10" min="0" max="500" class="custom-num-input">
+          </div>
+          <label class="toggle-checkbox-label" style="margin-top: 12px;">
+            <input type="checkbox" id="pref-prefer-free" checked>
+            <span>Prioritize local open-weights engines whenever capability permits</span>
+          </label>
+        </div>
+
+        <div class="settings-group" id="settings-keys-group">
+          <h3>Provider API Keys & Local Runtimes</h3>
+          <p class="settings-desc">Configure your Google Gemini API Key and inspect local Ollama models on your laptop.</p>
+          
+          <div class="settings-field-row" style="margin-bottom: 12px; display:flex; gap:10px; align-items:center;">
+            <label for="pref-gemini-key" style="min-width: 180px;"><strong>Google Gemini API Key:</strong></label>
+            <input type="password" id="pref-gemini-key" placeholder="Enter GEMINI_API_KEY (AIza...)" class="custom-num-input" style="flex:1; min-width: 260px;">
+            <button type="button" class="primary-action-btn" id="save-gemini-key-btn" style="padding: 0.6rem 1.2rem; white-space: nowrap;">Save & Connect</button>
+          </div>
+          <div id="gemini-key-status" style="font-size: 0.85rem; margin-bottom: 1rem; color: var(--text-muted);">
+            Status: <span id="gemini-status-badge" style="color: var(--accent-cyan); font-weight: 600;">Checking...</span>
+          </div>
+
+          <div class="local-models-status-box" style="padding: 14px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <strong>💻 Downloaded Local Models on Laptop (Ollama):</strong>
+              <span id="ollama-status-badge" style="color:#10b981; font-weight: 600; font-size:0.85rem;">Active (localhost:11434)</span>
+            </div>
+            <div id="installed-local-models-list" style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <span class="tag" style="background: rgba(14,165,233,0.15); border: 1px solid rgba(14,165,233,0.3); color:#38bdf8;">llama3.2:3b</span>
+              <span class="tag" style="background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); color:#34d399;">qwen2.5-coder:7b</span>
+              <span class="tag" style="background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); color:#c084fc;">deepseek-r1:8b</span>
+              <span class="tag" style="background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3); color:#fbbf24;">gemma4:e4b</span>
+              <span class="tag" style="background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.3); color:#818cf8;">qwen3:8b</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <h3>Trust Layer Verification Policy</h3>
+          <p class="settings-desc">Depth of validation applied before displaying synthesized responses.</p>
+          <select id="pref-trust-policy" class="custom-select" style="max-width: 380px;">
+            <option value="standard" selected>Standard — Stages A, B, C (AST syntax & deterministic math)</option>
+            <option value="strict">Strict — Enforce all 5 stages with full findings audit</option>
+            <option value="low_latency">Low Latency — Fast Stage A Integrity checks only</option>
+          </select>
+        </div>
+
+        <div class="settings-actions">
+          <button type="button" class="primary-action-btn" id="save-settings-btn">Save Preferences</button>
+          <span class="settings-saved-indicator hidden" id="settings-saved-indicator">✓ Preferences saved to session</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- AUTHENTICATION MODAL (LOGIN & REGISTRATION) -->
+  <div class="modal-backdrop hidden" id="auth-modal">
+    <div class="auth-card glass-card">
+      <button class="modal-close-btn" id="auth-modal-close">×</button>
+      
+      <div class="auth-card-header">
+        <div class="auth-logo-badge">SYNTRA AI</div>
+        <h3 id="auth-modal-title">Welcome to OpenPilot</h3>
+        <p id="auth-modal-subtitle">One request. Every model. Zero guesswork.</p>
+      </div>
+
+      <!-- Auth Mode Switch Tabs -->
+      <div class="auth-mode-tabs">
+        <button class="auth-tab-btn active" id="tab-login-btn">Log In</button>
+        <button class="auth-tab-btn" id="tab-register-btn">Register</button>
+      </div>
+
+      <!-- Error / Notification Banner -->
+      <div class="auth-error-banner hidden" id="auth-error-banner"></div>
+
+      <!-- FORM: LOGIN -->
+      <form class="auth-form" id="login-form">
+        <div class="form-field">
+          <label for="login-email">Email Address</label>
+          <input type="email" id="login-email" required placeholder="developer@example.com">
+        </div>
+        <div class="form-field">
+          <label for="login-password">Password</label>
+          <div class="password-input-group">
+            <input type="password" id="login-password" required placeholder="••••••••">
+            <button type="button" class="pwd-toggle-btn" data-target="login-password">👁️</button>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="forgot-link-btn" id="forgot-password-link">Forgot password?</button>
+        </div>
+        <button type="submit" class="submit-auth-btn" id="login-submit-btn">Sign In to OpenPilot</button>
+      </form>
+
+      <!-- FORM: REGISTER -->
+      <form class="auth-form hidden" id="register-form">
+        <div class="form-field">
+          <label for="reg-name">Full Name</label>
+          <input type="text" id="reg-name" required placeholder="Ada Lovelace">
+        </div>
+        <div class="form-field">
+          <label for="reg-email">Email Address</label>
+          <input type="email" id="reg-email" required placeholder="developer@example.com">
+        </div>
+        <div class="form-field">
+          <label for="reg-password">Password (min 8 chars, 1 number/symbol)</label>
+          <div class="password-input-group">
+            <input type="password" id="reg-password" required placeholder="••••••••">
+            <button type="button" class="pwd-toggle-btn" data-target="reg-password">👁️</button>
+          </div>
+        </div>
+        <button type="submit" class="submit-auth-btn" id="register-submit-btn">Create Account</button>
+      </form>
+
+      <!-- FORM: PASSWORD RESET -->
+      <form class="auth-form hidden" id="reset-form">
+        <div class="form-field">
+          <label for="reset-email">Your Account Email</label>
+          <input type="email" id="reset-email" required placeholder="developer@example.com">
+        </div>
+        <div class="form-field">
+          <label for="reset-new-password">New Secure Password</label>
+          <div class="password-input-group">
+            <input type="password" id="reset-new-password" required placeholder="••••••••">
+            <button type="button" class="pwd-toggle-btn" data-target="reset-new-password">👁️</button>
+          </div>
+        </div>
+        <button type="submit" class="submit-auth-btn" id="reset-submit-btn">Update Password</button>
+        <button type="button" class="cancel-reset-btn" id="cancel-reset-btn">Back to Login</button>
+      </form>
+
+      <!-- Instant Guest / Demo Mode Button -->
+      <div class="demo-mode-divider">
+        <span>OR EXPLORE INSTANTLY</span>
+      </div>
+      <button type="button" class="demo-guest-btn" id="launch-demo-btn">
+        <span class="sparkle">✨</span>
+        <span>Launch Sandboxed Demo Mode</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- JURY DEMONSTRATION MODE MODAL -->
+  <div class="modal-backdrop hidden" id="jury-demo-modal">
+    <div class="jury-demo-card glass-card">
+      <button class="modal-close-btn" id="jury-modal-close">×</button>
+
+      <div class="jury-card-header">
+        <div class="jury-badge">CONTROLLED JURY WORKFLOW</div>
+        <h2>Adaptive Model Migration & Failover Demo</h2>
+        <p>Exercises the complete 12-step orchestration loop: prompt identification, initial failure injection, retry bounds, Context DNA preservation, circuit-breaker failover, target continuation, and Trust Layer verification.</p>
+      </div>
+
+      <!-- Demo Parameter Form -->
+      <div class="jury-demo-form" id="jury-demo-form">
+        <div class="jury-form-group">
+          <label for="jury-prompt-input">Test Request (Unseen Prompt):</label>
+          <div class="jury-presets-row">
+            <button type="button" class="jury-preset-btn active" data-preset="coding">Python Pipeline</button>
+            <button type="button" class="jury-preset-btn" data-preset="math">Deterministic Math Proof</button>
+            <button type="button" class="jury-preset-btn" data-preset="json">JSON API Architecture</button>
+          </div>
+          <textarea id="jury-prompt-input" rows="3" class="prompt-textarea">Implement a robust Python data pipeline with schema validation and summary metrics in JSON format.</textarea>
+        </div>
+
+        <div class="jury-form-row">
+          <div class="jury-form-group">
+            <label for="jury-source-model">Primary Engine (Simulated Target):</label>
+            <select id="jury-source-model" class="custom-select">
+              <option value="claude-3-5-sonnet">Claude 3.5 Sonnet (Anthropic)</option>
+              <option value="gpt-4o">GPT-4o (OpenAI)</option>
+              <option value="gemini-1-5-pro">Gemini 1.5 Pro (Google)</option>
+            </select>
+          </div>
+
+          <div class="jury-form-group">
+            <label for="jury-failure-type">Controlled Failure Injection:</label>
+            <select id="jury-failure-type" class="custom-select">
+              <option value="429 Too Many Requests: Rate limit exceeded on provider endpoint">Rate Limit Exceeded (HTTP 429)</option>
+              <option value="Error 402: You have exceeded your current quota / billing limit reached">Quota Exhausted (HTTP 402)</option>
+              <option value="HTTP 503 Service Unavailable: Primary engine temporarily offline">Provider Unavailable (HTTP 503)</option>
+              <option value="Context length exceeded: prompt is too long for maximum context">Context Window Overflow</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="jury-options-bar">
+          <label class="toggle-checkbox-label">
+            <input type="checkbox" id="jury-free-only-toggle" checked>
+            <span>Enforce Free-Only Engine Fallback (Zero Unexpected Cost)</span>
+          </label>
+          <button type="button" class="primary-action-btn" id="jury-run-failover-btn">
+            <span>Run Controlled Failover Loop</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Handover Progression Console -->
+      <div class="jury-live-results-area hidden" id="jury-live-results">
+        <div class="results-header-bar">
+          <span class="status-indicator-dot running" id="jury-status-dot"></span>
+          <span class="results-title" id="jury-results-title">Orchestrating Failover Handover...</span>
+          <span class="results-latency" id="jury-results-latency">0 ms</span>
+        </div>
+
+        <!-- 8-Step Timeline Visualizer -->
+        <div class="jury-steps-grid" id="jury-steps-grid">
+          <div class="jury-step-card" id="jstep-1">
+            <span class="step-num">1</span>
+            <span class="step-name">Intent Understood</span>
+            <span class="step-meta" id="jstep-1-meta">—</span>
+          </div>
+          <div class="jury-step-card" id="jstep-2">
+            <span class="step-num">2</span>
+            <span class="step-name">Failure Injected</span>
+            <span class="step-meta" id="jstep-2-meta">—</span>
+          </div>
+          <div class="jury-step-card" id="jstep-3">
+            <span class="step-num">3</span>
+            <span class="step-name">Retry Bounds</span>
+            <span class="step-meta" id="jstep-3-meta">—</span>
+          </div>
+          <div class="jury-step-card" id="jstep-4">
+            <span class="step-num">4</span>
+            <span class="step-name">Context DNA Built</span>
+            <span class="step-meta" id="jstep-4-meta">—</span>
+          </div>
+          <div class="jury-step-card" id="jstep-5">
+            <span class="step-num">5</span>
+            <span class="step-name">Circuit Breaker</span>
+            <span class="step-meta" id="jstep-5-meta">—</span>
+          </div>
+          <div class="jury-step-card" id="jstep-6">
+            <span class="step-num">6</span>
+            <span class="step-name">Packet Dispatched</span>
+            <span class="step-meta" id="jstep-6-meta">—</span>
+          </div>
+          <div class="jury-step-card" id="jstep-7">
+            <span class="step-num">7</span>
+            <span class="step-name">Continuation Done</span>
+            <span class="step-meta" id="jstep-7-meta">—</span>
+          </div>
+          <div class="jury-step-card" id="jstep-8">
+            <span class="step-num">8</span>
+            <span class="step-name">Trust Layer Verified</span>
+            <span class="step-meta" id="jstep-8-meta">—</span>
+          </div>
+        </div>
+
+        <!-- Detailed Handover Output -->
+        <div class="jury-output-split">
+          <div class="jury-box context-box">
+            <h4>🧬 Preserved Context DNA & Handover Packet</h4>
+            <div class="code-preview-scroll" id="jury-dna-preview"></div>
+          </div>
+          <div class="jury-box output-box">
+            <h4>⚡ Target Engine Verified Continuation Result</h4>
+            <div class="code-preview-scroll" id="jury-output-preview"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
